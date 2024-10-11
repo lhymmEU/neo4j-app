@@ -15,6 +15,8 @@ describe('01. Initiate Driver', () => {
       NEO4J_PASSWORD,
     } = process.env
 
+    console.log(`NEO4J_URI: ${NEO4J_URI}, NEO4J_USERNAME: ${NEO4J_USERNAME}, NEO4J_PASSWORD: ${NEO4J_PASSWORD}`);
+
     expect(NEO4J_URI).toBeDefined()
     expect(NEO4J_USERNAME).toBeDefined()
     expect(NEO4J_PASSWORD).toBeDefined()
@@ -29,17 +31,18 @@ describe('01. Initiate Driver', () => {
     expect(driver.constructor.name).toEqual('Driver')
   })
 
-  it('Driver can verify connectivity', () => {
+  it('Driver can verify connectivity', async () => {
     const driver = getDriver()
     expect(driver).toBeDefined()
     expect(driver.constructor.name).toEqual('Driver')
 
-    driver.verifyConnectivity()
-      .then(() => {
-        expect(true).toEqual(true)
-      })
-      .catch(e => {
-        expect(e).toBeUndefined('Unable to verify connectivity')
-      })
+    // Use async/await to handle the connectivity verification
+    try {
+      await driver.verifyConnectivity()
+      expect(true).toEqual(true)  // Connectivity verified successfully
+    } catch (e) {
+      console.error('Connectivity verification failed:', e)  // Log the error for better debugging
+      expect(e).toBeUndefined()   // If an error occurs, this will fail the test
+    }
   })
 })
